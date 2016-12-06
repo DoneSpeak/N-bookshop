@@ -1,0 +1,45 @@
+#!/usr/bin/env node
+
+var capp  = require('..');
+var fs    = require('fs');
+var path  = require('path');
+var argv  = require('optimist').boolean(['h', 'help']).argv;
+var args  = argv._;
+
+if (argv.h || argv.help || args.length < 2) {
+  var fp = path.resolve(__dirname, 'usage.txt')
+  var usage = fs.readFileSync(fp, 'utf8');
+  process.stdout.write(usage);
+  process.exit(1);
+}
+
+function suggestHelp (msg) {
+  console.error(msg, 'Use -h or --help to view the usage information.');
+}
+
+function validCommand (cmd) {
+  if (capp.hasOwnProperty(cmd)) return true;
+  suggestHelp('Invalid command.');
+  return false;
+}
+
+function validDirectory (dir) {
+  try {
+    var stats = fs.statSync(dir);
+    if (stats.isDirectory()) return true;
+    throw new Error();
+  } catch (e) {
+    suggestHelp('Invalid directory.');
+    return false;
+  }
+}
+
+function valid (args) {
+  return validCommand(args[0]) && validDirectory(args[1]);
+}
+
+function done (err, response) {
+  console.log(err, response);
+}
+
+valid(args) && capp[args.shift()].apply(null, args.concat([done]));

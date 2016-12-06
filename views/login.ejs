@@ -1,0 +1,30 @@
+<%- include('components/header') %>
+	<div class="main main-white">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4">
+					<div class="signin-div">
+						<%- include('components/notification') %>
+						<form class="signin-form" role="form" method="post" action="login">
+							<span class="tosignin">Don't have a account? <a href="/signin">sign in</a></span>
+							<hr />
+							<div class="form-group">
+								<label for="username">USERNAME</label>
+								<input type="text" class="form-control" name="username" placeholder="enter name" />
+							</div>
+							<div class="form-group">
+								<label for="password">PASSWORD</label>
+								<input type="password" class="form-control" name="password" placeholder="enter password" />
+							</div>
+							<div class="form-group">
+								<label for="verifycode">VERIFYCODE</label>
+								<input type="text" class="form-control" name="verifycode" placeholder="enter verifycode" /><img class="verifyimg" src="/login/verifycode">
+							</div>
+							<button type="submit" class="btn btn-default">LOGIN</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<%- include('components/footer') %>

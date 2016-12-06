@@ -1,0 +1,48 @@
+<%- include('components/header') %>
+	<div class="main main-white">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+					<div class="table-responsive table-shadow">
+			            <table class="table table-striped">
+			              	<thead>
+				                <tr>
+				                  	<th></th>
+				                  	<th>书名</th>
+				                  	<th>单价(元)</th>
+				                 	<th>数量</th>
+				                  	<th>金额</th>
+				                  	<th>操作</th>
+				                </tr>
+			              	</thead>
+			              	<tbody>
+			              	<% var sum_cost = 0 %>
+			              	<% books.forEach(function(book){ %>
+			              		<tr>
+				                  	<td><input type="checkbox" class="checkbox-isbn" name="isbn" value="<%= book.isbn %>"/></td>
+				                 	<td><%= book.name %></td>
+				                  	<td class="price"><%= book.price.toFixed(2) %></td>
+				                  	<td><span class="book-amount"><span class="book-sub">-</span><input class="book-nums" type="text" value="<%= book.num %>"><a class="book-add" href="javascript:void(0)">+</a></span>
+				                  	</td>
+				                  	<td class="book-amountcost"><%= book.amount.toFixed(2) %></td>
+				                  	<td><a class="delete-cart-item" href="javascript:void(0)">删除</a></td>
+				                  	<% sum_cost += book.amount %>
+				                </tr>
+			              	<% }) %>
+				            </tbody>
+				        </table>
+				    </div>
+				    <div class="divider divider-light"></div>
+				    <div class="amount">
+						<div class="tag-left">
+							<input class="allchose" type="checkbox" />全选
+						</div>
+						<div class="tag-right">
+				    		总计: <span class="amount-cost">￥0.00</span><button type="submit" class="btn submit-order">提交订单</button>
+				    	</div>
+				    </div>
+				</div>
+			</div>
+		</div>
+	</div>
+<%- include('components/footer') %>

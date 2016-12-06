@@ -1,0 +1,31 @@
+<%- include('components/header') %>
+	<div class="main newbook-all">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-3 col-md-offset-2 col-sm-4 col-sm-offset-1">
+					<div class="book-img">
+						<img src="img/books/<%= book.img%>" />
+					</div>
+				</div>
+				<div class="sell col-md-5 col-sm-6">
+					<div class="booktext">
+						<h3>《<%- book.name %>》</h3>
+						<div class="divider divider-bookinfo"></div>
+						<p><span class="t1">作者:<%= book.author %></span><span class="t1">著出版社:<%= book.publish_company %></span><span class="t1">出版时间:<%= book.publish_time %></span><p>
+						<p class="newbook-intro"><%= book.intro %></p>
+					</div>
+					<div class="snapped-up-btn-area">
+						<span class="cost">￥<%= book.price %></span> / <span class="cost-original">¥<%= book.price_original %></span>
+						<% if(snap_kill ==='n' ){ %>
+						<p>每周二 12:00 抢购，周四 12:00 秒购</p>
+						<% }else if(snap_kill === 's'){ %>
+						<button class="snapup">Snap Up</button>
+						<% }else{ %>
+						<button class="snapup">Seckill</button>
+						<% } %>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<%- include('components/footer') %>

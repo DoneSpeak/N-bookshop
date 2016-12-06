@@ -1,0 +1,15 @@
+<div class="book">
+	<img src="./img/books/<%= book.img %>"/>
+	<p class="book-name">《<%= book.name %>》</p>
+	<p class="book-intro"><%= book.intro %></p>
+	
+	<div class="add-button">
+		<span class="isbn" style="display:none"><%= book.isbn %></span>
+		<span class="cost">￥<%= book.price %></span> / <span class="cost-original">¥<%= book.price_original %></span>
+		<% if(book.num > 0){ %>
+			<button class="add2cart">Add To Cart</button>
+		<% }else{ %>
+			<button class="add2cart btn-disable" disabled="disable">缺货</button>
+		<% } %>
+	</div>
+</div>

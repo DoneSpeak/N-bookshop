@@ -1,0 +1,13 @@
+<%- include('components/header') %>
+	<div class="main">
+		<div class="container-fluid">
+			<div class="row">
+				<% books.forEach(function(book){ %>
+				<div class="book-box col-md-3 col-sm-6">
+					<%- include('components/book',{book:book}) %>
+				</div>
+				<% }); %>
+			</div>
+		</div>
+	</div>
+<%- include('components/footer') %>
