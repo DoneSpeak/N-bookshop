@@ -8,6 +8,14 @@ module.exports = {
 			req.flash('err','尚未登录');
 			return res.redirect('/login');
 		}
+		var username = req.session.user.username;
+		var username_sig = sha1(config.session.secret_string+username);
+		if(username_sig != req.session.user.username_sig){
+			// 防止黑客通过cookie攻击
+			req.flash('error','权限不足');
+			return res.redirect('/login');
+		}
+		
 		next();
 	},
 

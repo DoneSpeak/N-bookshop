@@ -31,9 +31,13 @@ input.allchose{
 	float:right;
 }
 
+.table-cart{
+	width:100%;
+}
 /*------------ order ------------*/
 .mian-pay{
 	margin-top:2em;
+	min-width: 25em;
 }
 
 .order-operator{
@@ -46,6 +50,8 @@ input.allchose{
 
 .ordernum-text{
 	padding-left:0.4em;
+	padding-right:0.4em;
+	font-weight: bold;
 }
 
 .order-putback{
@@ -57,7 +63,15 @@ input.allchose{
 }
 
 .paygraphic{
-	border:1px solid #000;
+	/*border:1px solid #000;*/
+	text-align: center;
+}
+
+
+@media (max-width: 992px) {
+	.paygraphic{
+		margin-top:4em;
+	}
 }
 
 .order-list{
@@ -96,6 +110,11 @@ input.allchose{
 	background-color:#E53935;
 	color:#fff;
 	border:0;
+}
+
+.btn-checkout a{
+	text-decoration: none;
+	color:#fff;
 }
 
 .logout{
@@ -154,4 +173,10 @@ input.allchose{
 .book-amount a:link, .book-amount a:visited {
     text-decoration: none;
     color: #323232;
+}
+
+.alert-div.orderlist{
+	display: none;
+	margin-top:1em;
+	margin-bottom:0;
 }

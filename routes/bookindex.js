@@ -35,11 +35,10 @@ router.post('/add2cart',function(req, res, next){
 	var uid = req.session.user.uid;
 	// 考虑是否已经登录，没有登录购物的信息存在浏览器本地，登录后则存入数据库
 	// 暂时都保存到数据库
-	cartModel.addBookToCart(uid,isbn,function(err, bookNum, fields){
+	cartModel.addBookToCart(uid,isbn,function(err, fields){
 		// res.render('bookindex',{books:rows});
 		return res.json({
-			err:'OK',
-			bookNum:bookNum
+			err:err
 		});
 	});
 	

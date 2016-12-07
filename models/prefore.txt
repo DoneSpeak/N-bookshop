@@ -1,0 +1,18 @@
+function createPreOrderSql(books){
+	// update s_store set amount = amount - quantity where amount>= quantity and postID = 12345′
+	update tb_bookstore set num = num - ? where num >= ? and isbn = ?
+	var isbnArr = new Array();
+
+	var sql = "insert into tb_order_user_book ";
+	sql += "num = case isbn ";
+	var when = "";
+	for(var i = 0; i < books.length; i ++){
+		when += "when " + books[i].isbn + " then " + (num - books[i].num) + " ";
+		isbn.push(books[i].isbn);
+	}
+	when += "end where isbn in (" + isbnArr.join(',') + ")";
+	sql += when;
+	and 
+	sql += " and num >= "
+	return ;
+}

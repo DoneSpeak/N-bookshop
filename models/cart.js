@@ -2,7 +2,7 @@ var mysql = require('mysql');
 var config = require('config-lite');
 var sqlMap = require('./sqlMap');
  
-// 使用连接池，提升性能
+// 提升性能
 var connection  = mysql.createConnection(config.mysql);
 
 module.exports = {
@@ -27,34 +27,59 @@ module.exports = {
 	
 	addBookToCart: function(uid, isbn, callback){
 		// 用于bookindex页面添加书本，库存无书是无法添加，因此无需检验库存是否有书
-		connection.query(sqlMap.cartsql.bookNumInc,[uid,isbn],function(err, fields) {
-			console.log('bookNumInc-fields',fields);
-			if(fields.affectedRows < 1){
-				// 购物车中还没有该书
-				connection.query(sqlMap.cartsql.addOneBook,[uid,isbn], function(err, fields){
-					console.log('addOneBook-fields',fields);
-					connection.query(sqlMap.cartsql.countBookNum,[uid], function(err, rows, fields){
-						
-						var bookNum = rows[0].bookNum;
-						if(!bookNum){
-							bookNum = 0;
-						}
+		// 获取当前购物车中该本书的书本数
+		// 获取库存中的该本书
+		connection.query(sqlMap.bookstore.getBookStoreNum,[isbn],function(err, rows, fields) {
+			var bookStoreNum = rows[0].num;
+			console.log("bookStoreNum",bookStoreNum);
+			if(bookStoreNum < 1){
+				// 已没有库存
+				if(typeof callback === 'function'){
+					callback("NOTENOUGH", fields);
+				}
+				return;
+			}
+			connection.query(sqlMap.cartsql.getOneTypeBookNum,[uid,isbn],function(err, rows, fields) {
+				console.log("getOneTypeBookNum-err",err);
+				console.log("getOneTypeBookNum-rows",rows);
+				console.log("getOneTypeBookNum-fields",fields);
+				if(rows.length < 1){
+					// 购物车中还没有该书，添加一本
+					connection.query(sqlMap.cartsql.addOneBook,[uid,isbn], function(err, fields){
+						console.log('addOneBook-fields',fields);
 						if(typeof callback === 'function'){
-							callback(err, bookNum, fields);
+							callback("OK", fields);
 						}
 					});
-				});
-			}else{
-				connection.query(sqlMap.cartsql.countBookNum,[uid], function(err, rows, fields){
-					var bookNum = rows[0].bookNum;
-					if(!bookNum){
-						bookNum = 0;
+				}else{
+					var bookCartNum = rows[0].num;
+					console.log("bookCartNum",bookCartNum);
+					if(bookStoreNum - bookCartNum > 0){
+						// 库存的书比购物车的书多上一本以上
+						// 购物车上该书增加一本
+						connection.query(sqlMap.cartsql.bookNumInc,[uid,isbn],function(err, fields) {
+							console.log('bookNumInc-fields',fields);
+							if(typeof callback === 'function'){
+								callback("OK", fields);
+							}
+							// connection.query(sqlMap.cartsql.countBookNum,[uid], function(err, rows, fields){
+							// 	var bookNum = rows[0].bookNum;
+							// 	if(!bookNum){
+							// 		bookNum = 0;
+							// 	}
+							// 	if(typeof callback === 'function'){
+							// 		callback(err, bookNum, fields);
+							// 	}
+							// });
+						});
+					}else{
+						// 库存不足
+						if(typeof callback === 'function'){
+							callback("NOTENOUGH", fields);
+						}
 					}
-					if(typeof callback === 'function'){
-						callback(err, bookNum, fields);
-					}
-				});
-			}
+				}
+			});
 		});
 	},
 	incOneBook:function(uid, isbn, callback){
@@ -120,6 +145,9 @@ module.exports = {
 			if(bookNum > num){
 				// 比库存还要多
 				bookNum = num;
+				if(num < 0){
+					bookNum = 0;
+				}				
 			}
 			console.log('bookNum',bookNum);
 			connection.query(sqlMap.cartsql.bookNumReset,[bookNum,uid,isbn],function(err, fields){
@@ -136,16 +164,6 @@ module.exports = {
 			console.log("delOneTypeBook-fields",fields);
 			if(typeof callback === 'function'){
 				callback(err, fields);
-			}
-		});
-	},
-	cteateOrder:function(){
-		connection.query(sqlMap.bookstore.subOneBook,[isbn],function(err, fields) {
-			// 库存减少一本书
-			if(fields.affectedRows < 1){
-				// 该书库存以没有
-				console.log('没有库存');
-				return;
 			}
 		});
 	}

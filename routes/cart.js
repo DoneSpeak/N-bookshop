@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 
 var cartModel = require('../models/cart');
+var orderModel = require('../models/order');
 var checkAuth = require('../middleware/authController').checkAuth;
 var checkLogin = require('../middleware/authController').checkLogin;
 //获取登录界面
@@ -30,7 +31,7 @@ router.get('/',function(req, res, next){
 	});
 });
 
-// 减少一本书
+// 改变一本书的数量
 router.post("/:ISBN/change",function(req,res,next){
 	if(!req.session.user){
 		req.flash('error','尚未登录');
@@ -65,7 +66,7 @@ router.post("/:ISBN/change",function(req,res,next){
 	});
 });
 
-// 删除一本书
+// 删除一种书
 router.post("/:ISBN/del",function(req, res, next){
 	if(!req.session.user){
 		req.flash('error','尚未登录');
@@ -91,6 +92,20 @@ router.post("/:ISBN/del",function(req, res, next){
 	cartModel.delOneTypeBook(uid,isbn,function(err,fields){
 		return res.json({
 			err:"OK"
+		});
+	});
+});
+
+// 创建书单
+router.post("/order",checkLogin,function(req, res, next){
+	// 获取请求的数据
+	var uid = req.session.user.uid;
+	var books = JSON.parse(req.body.books);
+
+	orderModel.cteateOrder(uid, books, function(err,oid){
+		return res.json({
+			err:err,
+			oid:oid
 		});
 	});
 });

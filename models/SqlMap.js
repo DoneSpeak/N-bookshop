@@ -1,16 +1,12 @@
 //增删查改的sql语句
 var usersql = {
 	insert:'insert into tb_user(name,password) values(?,?)',
-	selectByName:'select * from tb_user where name=?',
-	update:'update tb_user set name=?, age=? where id=?',
-	delete: 'delete from tb_user where uid=?',
-	queryById: 'select * from tb_user where uid=?',
-	queryAll: 'select * from user'
+	selectByName:'select * from tb_user where name=?'
 };
 
 var booksql = {
 	// select的字段名为rows的属性名
-	selectN:"select B.isbn,B.name,B.intro,B.price,B.price_original,B.img,S.num from tb_book B,tb_bookstore S where B.state='n' and S.num and B.isbn=S.isbn",
+	selectN:"select B.isbn,B.name,B.intro,B.price,B.price_original,B.img,S.num from tb_book B,tb_bookstore S where B.state='n' and B.isbn=S.isbn",
 	selectS:"select * from tb_book where state='s' limit 1"
 };
 
@@ -23,7 +19,28 @@ var cartsql = {
 	countBookNum:"select sum(num) as bookNum from tb_cart where uid=?",
 	subOneBook:"update tb_cart set num = num - 1 where uid=? and isbn=?",
 	getOneTypeBookNum:"select num from tb_cart where uid=? and isbn=?",
-	deleteOneTypeBook:"delete from tb_cart where uid=? and isbn=?"
+	deleteOneTypeBook:"delete from tb_cart where uid=? and isbn=?",
+	deleteBooks:"delete from tb_cart where uid=? and isbn in (?)",
+	checkCanAddBook:"select (S.num - C.num) as bookleft from tb_cart C, tb_bookstore S where C.uid=? and C.isbn=?"
+};
+
+var ordersql = {
+	preOrder:"update tb_bookstore set num = num - ? where num >= ? and isbn = ?",
+
+	cteateOrder:"insert into tb_order(oid, paystate, disabletime) values(?,?,?)",
+
+	selectAll:"select O.oid, B.name, B.price,OUB.num,(OUB.num * B.price ) as bookamount, O.amount, O.disabletime \
+from tb_book B,tb_order_user_book OUB,tb_order O \
+where OUB.uid=? and B.isbn=OUB.isbn and OUB.oid=O.oid and unix_timestamp()*1000 <= O.disabletime and O.paystate=0 order by O.oid",
+
+	selectByOid:"select O.oid, B.name, B.price,OUB.num,(OUB.num * B.price ) as bookamount, O.amount, O.disabletime \
+from tb_book B,tb_order_user_book OUB,tb_order O \
+where O.oid=? and OUB.uid=? and B.isbn=OUB.isbn and OUB.oid=O.oid",
+
+	getOrderCostAMount:"select sum(OUB.num * B.price) as amount from tb_book B,tb_order_user_book OUB,tb_order O \
+where O.oid=? and OUB.uid=? and B.isbn=OUB.isbn and OUB.oid=O.oid",
+
+	addOrderAmount:"update tb_order set amount=? where oid=?"
 };
 
 var bookstore = {
@@ -31,9 +48,26 @@ var bookstore = {
 	subOneBook:"update tb_bookstore set num = num - 1 where isbn=? and num > 0"
 };
 
+var common = {
+	begin:"begin",
+	saveStartPoint:"savepoint startPoint",
+	rollback:"rollback",
+	rollbackToStartOrder:"rollback to startPoint",
+	rollbackAndCommit:'rollback;commit',
+	commit:"commit;"
+};
+
 module.exports = {
 	usersql:usersql,
 	booksql:booksql,
 	cartsql:cartsql,
-	bookstore:bookstore
+	ordersql:ordersql,
+	bookstore:bookstore,
+	common:common
 };
+
+
+// select O.oid, B.name, B.price,OUB.num,(OUB.num * B.price ) as bookamount ,O.amount,O.disabletime
+// from tb_book B,tb_order_user_book OUB,tb_order O 
+// where OUB.uid=11 and B.isbn=OUB.isbn and OUB.oid=O.oid and unix_timestamp() <= O.disabletime and O.paystate=0;
+
