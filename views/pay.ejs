@@ -11,7 +11,7 @@
 								    <strong>提示！</strong><span class="tips-text">请与3小时内付款</span>
 								</div>
 								<div class="order-operator">
-									<span class="ordernum-text">订单号：</span><span class="order-num"><%= order.oid %></span><span class="order-cancel"><a href="#">取消订单</a></span>
+									<span class="ordernum-text">订单号：</span><span class="order-num"><%= order.oid %></span><span class="order-cancel"><a href="/orderlist/<%= order.oid %>/cancle">取消订单</a></span>
 								</div>
 								<table>
 								<% order.books.forEach(function(book){ %>

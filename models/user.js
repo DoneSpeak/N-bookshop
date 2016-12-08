@@ -26,21 +26,21 @@ module.exports = {
 	add: function (user, callback) {
 
 		connection.connect(function(err){
-			console.log("连接成功");
+			// console.log("连接成功");
 		});
 
 		connection.on('error',function(err){
-			console.log('出错啦');
+			// console.log('出错啦');
 		});
 
 		connection.on('close',function(err){
-			console.log('关闭');
+			// console.log('关闭');
 		});
 
-		// console.log([user.name, user.password]);
+		// // console.log([user.name, user.password]);
 		connection.query(sqlMap.usersql.insert, [user.name, user.password], function(err, fields) {
-			console.log('insert-err',err);
-			console.log('insert-fields',fields);
+			// console.log('insert-err',err);
+			// console.log('insert-fields',fields);
 
 			if( typeof callback == 'function'){
 				callback(err, fields);

@@ -73,7 +73,7 @@ module.exports = {
 		verify.code = ary[0].toLowerCase();
 		verify.img = ary[1];
 
-		console.log('verify.code',verify.code);
+		// console.log('verify.code',verify.code);
 
 		return verify;
 	}

@@ -63,6 +63,16 @@
 	color:#fff;
 }
 
+.seckill{
+	height:2.6em;
+	width:8em;
+	line-height: 2.3em;
+	/* border-radius:0.2em; */
+	border:0;
+	background-color:#2F6FA6;
+	color:#fff;
+}
+
 
 @media(max-width: 768px){
 	.newbook-all{

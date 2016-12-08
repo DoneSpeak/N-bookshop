@@ -31,7 +31,7 @@ module.exports = {
 		// 获取库存中的该本书
 		connection.query(sqlMap.bookstore.getBookStoreNum,[isbn],function(err, rows, fields) {
 			var bookStoreNum = rows[0].num;
-			console.log("bookStoreNum",bookStoreNum);
+			// // console.log("bookStoreNum",bookStoreNum);
 			if(bookStoreNum < 1){
 				// 已没有库存
 				if(typeof callback === 'function'){
@@ -40,25 +40,25 @@ module.exports = {
 				return;
 			}
 			connection.query(sqlMap.cartsql.getOneTypeBookNum,[uid,isbn],function(err, rows, fields) {
-				console.log("getOneTypeBookNum-err",err);
-				console.log("getOneTypeBookNum-rows",rows);
-				console.log("getOneTypeBookNum-fields",fields);
+				// // console.log("getOneTypeBookNum-err",err);
+				// // console.log("getOneTypeBookNum-rows",rows);
+				// // console.log("getOneTypeBookNum-fields",fields);
 				if(rows.length < 1){
 					// 购物车中还没有该书，添加一本
 					connection.query(sqlMap.cartsql.addOneBook,[uid,isbn], function(err, fields){
-						console.log('addOneBook-fields',fields);
+						// // console.log('addOneBook-fields',fields);
 						if(typeof callback === 'function'){
 							callback("OK", fields);
 						}
 					});
 				}else{
 					var bookCartNum = rows[0].num;
-					console.log("bookCartNum",bookCartNum);
+					// console.log("bookCartNum",bookCartNum);
 					if(bookStoreNum - bookCartNum > 0){
 						// 库存的书比购物车的书多上一本以上
 						// 购物车上该书增加一本
 						connection.query(sqlMap.cartsql.bookNumInc,[uid,isbn],function(err, fields) {
-							console.log('bookNumInc-fields',fields);
+							// console.log('bookNumInc-fields',fields);
 							if(typeof callback === 'function'){
 								callback("OK", fields);
 							}
@@ -87,7 +87,7 @@ module.exports = {
 		connection.query(sqlMap.bookstore.getBookStoreNum,[isbn],function(err, rows, fields){
 			
 			var num = rows[0].num;
-			console.log("bookStore",rows);
+			// console.log("bookStore",rows);
 			// 判断库存是否有书
 			if(num > 0){
 				// 还有库存
@@ -130,7 +130,7 @@ module.exports = {
 	changeOneBookNum:function(uid,isbn,bookNum,callback){
 		// bookNum传入值为购物车的该书数
 		if(bookNum < 1){
-			console.log("changeOneBookNum",bookNum);
+			// console.log("changeOneBookNum",bookNum);
 			// 删除该图书
 			// 移除该书 -- 设置 incart = 0，以保留用户数据
 			connection.query(sqlMap.cartsql.deleteOneTypeBook,[uid,isbn],function(err, fields){
@@ -151,10 +151,10 @@ module.exports = {
 					bookNum = 0;
 				}				
 			}
-			console.log('bookNum',bookNum);
+			// console.log('bookNum',bookNum);
 			connection.query(sqlMap.cartsql.bookNumReset,[bookNum,uid,isbn],function(err, fields){
-				console.log('err',err);
-				console.log('bookNumReset-fields',fields);
+				// console.log('err',err);
+				// console.log('bookNumReset-fields',fields);
 				if(typeof callback === 'function'){
 					callback(err, fields, bookNum);
 				}
@@ -163,7 +163,7 @@ module.exports = {
 	},
 	delOneTypeBook:function(uid,isbn,callback){
 		connection.query(sqlMap.cartsql.deleteOneTypeBook,[uid,isbn],function(err, fields){
-			console.log("delOneTypeBook-fields",fields);
+			// console.log("delOneTypeBook-fields",fields);
 			if(typeof callback === 'function'){
 				callback(err, fields);
 			}

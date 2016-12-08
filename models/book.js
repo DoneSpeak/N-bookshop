@@ -22,5 +22,16 @@ module.exports = {
 				connection.end();
 			}			
 		});
+	},
+	getSnapupOrSecillBooks:function(type, callback){
+		var connection  = mysql.createConnection(config.mysql);
+		var sql = connection.query(sqlMap.booksql.selectSOrK, [type], function(err, rows, fields) {
+			var connection  = mysql.createConnection(config.mysql);
+			if( typeof callback == 'function'){
+				callback(err, rows, fields);
+				connection.end();
+			}			
+		});
+		// console.log("getSnapupOrSecillBooks",sql);
 	}
 };

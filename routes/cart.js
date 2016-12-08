@@ -102,7 +102,7 @@ router.post("/order",checkLogin,function(req, res, next){
 	// 获取请求的数据
 	var uid = req.session.user.uid;
 	var books = JSON.parse(req.body.books);
-	console.log(books);
+	// console.log(books);
 	orderModel.createOrder(uid, books, function(err,oid,lackBookList){
 		// console.log("lackBookList",lackBookList);
 		return res.json({

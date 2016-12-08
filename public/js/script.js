@@ -285,7 +285,9 @@ $(function(){
 // 提交订单
 $(function(){
 	$('.submit-order').on('click',function(){
-		
+		// 设置按钮不可用
+		$(this).attr("disabled","disable");
+
 		var bookcheckArr = $('.checkbox-isbn');
 		var priceArr = $('.price');
 		var book_numsArr = $('.book-nums');
@@ -304,6 +306,7 @@ $(function(){
 		}
 		if(books.length < 1){
 			alert('未选中商品');
+			$(this).attr("disabled",false);
 			return;
 		}
 		books = '[' + books + ']';
@@ -327,6 +330,7 @@ $(function(){
 					var lackBookList = result.lackBookList;
 					$(".tips-text").text("图书库存不足\\ " + lackBookList);
 					$(".orderlist").css("display","block");
+					$(this).attr("disabled",false);
 				}else if(result.err === "OK"){
 					// 下单完成
 					var oid = result.oid;
@@ -334,6 +338,7 @@ $(function(){
 				}
 			},
 			error:function(result){
+				$(this).attr("disabled",false);
 				alert('服务器错误，请稍后再试！');
 			}
 		});
