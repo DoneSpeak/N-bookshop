@@ -102,7 +102,39 @@ $(function(){
 		}
 		// 购物车书籍总数减 1
 		$('.booknumInCart').text($('.booknumInCart').text()-1);
-		changeOneBookNum(tag_book,bookNumTag,isbn,num,tag_price,tag_book_amount_cost);
+
+		var url = '/cart/' + isbn + '/change';
+		$.ajax({
+			type:"POST",
+			url:url,
+			data:{
+				isbn:isbn,
+				bookNum:num
+			},
+			success:function(result){
+				//对返回数据进行处理
+				if(result.err === 'NOTLOGIN' || result.err === "NOAUTH"){
+					return window.location.href="/login";
+				}
+				if(num > 0 && result.bookNum < num){
+					// 购物车的书多于库存
+					$(".tips-text").text("已到最大库存");
+					$(".orderlist").css("display","block");
+					// 库存的书可能远少于该购物车该书数量，数值更具库存书籍变化
+					var subNum = num - result.bookNum;
+					bookNumTag.val(result.bookNum);
+					// 金额更改
+					tag_book_amount_cost.text((tag_book_amount_cost.text()*1.0 - price*subNum).toFixed(2));
+
+					// 购物车书籍总数加 1
+					$('.booknumInCart').text($('.booknumInCart').text()*1.0 - subNum);
+				}
+			},
+			error:function(){
+				//错误提示
+				alert('服务器错误，请稍后再试！');
+			}
+		});
 	});
 });
 
@@ -121,15 +153,50 @@ $(function(){
 		// var coast_amount = tag_coast_amount.text();
 		var price = tag_price.text();
 
-		num ++;
-		bookNumTag.val(num);
-		// 金额更改
-		tag_book_amount_cost.text((tag_book_amount_cost.text()*1.0 + price*1.0).toFixed(2));
-		// tag_coast_amount.text((coast_amount*1.0+price*1.0).toFixed(2));
+		// changeOneBookNum(tag_book,bookNumTag,isbn,num,tag_price,tag_book_amount_cost);
+		var url = '/cart/' + isbn + '/change';
+		$.ajax({
+			type:"POST",
+			url:url,
+			data:{
+				isbn:isbn,
+				bookNum:num + 1
+			},
+			success:function(result){
+				//对返回数据进行处理
+				// 回调中修改数据前端显示数据，而操作由依赖于前端数据，这样会导致一个问题是在过快的操作中出现数据更新延迟错误
+				if(result.err === 'NOTLOGIN' || result.err === "NOAUTH"){
+					return window.location.href="/login";
+				}
+				if(result.bookNum >= 0 && result.bookNum <= num){
+					// 加上去的书多于库存
+					$(".tips-text").text("已到最大库存");
+					$(".orderlist").css("display","block");
+					// 库存的书可能远少于该购物车该书数量，数值更具库存书籍变化
+					var subNum = num - result.bookNum;
+					bookNumTag.val(result.bookNum);
+					// 金额更改
+					tag_book_amount_cost.text((tag_book_amount_cost.text()*1.0 - price*subNum).toFixed(2));
 
-		// 购物车书籍总数加 1
-		$('.booknumInCart').text($('.booknumInCart').text()*1.0+1);
-		changeOneBookNum(tag_book,bookNumTag,isbn,num,tag_price,tag_book_amount_cost);
+					// 购物车书籍总数加 1
+					$('.booknumInCart').text($('.booknumInCart').text()*1.0 - subNum);
+
+				}else{
+					// 可以添加
+					bookNumTag.val(num*1.0+1);
+					// 金额更改
+					tag_book_amount_cost.text((tag_book_amount_cost.text()*1.0 + price*1.0).toFixed(2));
+
+					// 购物车书籍总数加 1
+					var allBookNumInCart = $('.booknumInCart').text();
+					$('.booknumInCart').text(allBookNumInCart*1.0+1);
+				}
+			},
+			error:function(){
+				//错误提示
+				alert('服务器错误，请稍后再试！');
+			}
+		});
 	});
 });
 
@@ -257,7 +324,8 @@ $(function(){
 				if(result.err === "NOTENOUGH"){
 					// 库存不足
 					// 提示信息
-					$(".tips-text").text("图书库存不足");
+					var lackBookList = result.lackBookList;
+					$(".tips-text").text("图书库存不足\\ " + lackBookList);
 					$(".orderlist").css("display","block");
 				}else if(result.err === "OK"){
 					// 下单完成

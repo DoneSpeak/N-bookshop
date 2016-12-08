@@ -174,9 +174,3 @@ input.allchose{
     text-decoration: none;
     color: #323232;
 }
-
-.alert-div.orderlist{
-	display: none;
-	margin-top:1em;
-	margin-bottom:0;
-}

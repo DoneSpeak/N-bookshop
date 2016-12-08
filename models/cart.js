@@ -128,6 +128,7 @@ module.exports = {
 		});
 	},
 	changeOneBookNum:function(uid,isbn,bookNum,callback){
+		// bookNum传入值为购物车的该书数
 		if(bookNum < 1){
 			console.log("changeOneBookNum",bookNum);
 			// 删除该图书
@@ -142,6 +143,7 @@ module.exports = {
 		// 考虑库存
 		connection.query(sqlMap.bookstore.getBookStoreNum,[isbn],function(err, rows, fields){
 			var num = rows[0].num;
+			// 购物车书多于库存数，减为库存数或0
 			if(bookNum > num){
 				// 比库存还要多
 				bookNum = num;

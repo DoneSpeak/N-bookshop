@@ -20,6 +20,10 @@ router.get('/:oid',checkLogin,function(req, res, next){
 		// 通过oid获取订单数据
 		orderModel.getOneOrder(oid, uid, function(err, rows){
 			var orders = createOrders(rows);
+			if(rows.length < 1){
+				res.flash('error',"订单：" + oid + " 已失效");
+				res.redirect('orderlist');
+			}
 			res.render('pay',{bookNum:num,orders:orders});
 		});
 	});

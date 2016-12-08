@@ -61,6 +61,7 @@ router.post("/:ISBN/change",function(req,res,next){
 		console.log("changeOneBookNum",num);
 		return res.json({
 			err:"OK",
+			// bookNum是后台操作后的购物车中的实际数
 			bookNum:num
 		});
 	});
@@ -101,11 +102,13 @@ router.post("/order",checkLogin,function(req, res, next){
 	// 获取请求的数据
 	var uid = req.session.user.uid;
 	var books = JSON.parse(req.body.books);
-
-	orderModel.cteateOrder(uid, books, function(err,oid){
+	console.log(books);
+	orderModel.createOrder(uid, books, function(err,oid,lackBookList){
+		// console.log("lackBookList",lackBookList);
 		return res.json({
 			err:err,
-			oid:oid
+			oid:oid,
+			lackBookList:lackBookList
 		});
 	});
 });
